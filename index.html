@@ -15,6 +15,9 @@
         <nav class="menu_principal">
             <a href="#inicio">INICIO</a>
             <a href="#medidor">MEDIDOR</a>
+            <a href="#funcionamiento">GUÍA</a>
+            <a href="#decibelios">DECIBELIOS</a>
+            <a href="#info">INFO</a>
         </nav>
     </header>
 
@@ -64,7 +67,7 @@
 
             <div class="caja_medidor">
                 <div class="bloque_control">
-                    <button onclick="iniciar()">Activar Micrófono</button>
+                    <button>Activar Micrófono</button>
                     <br>
                     <canvas id="canvas" width="1000" height="300"></canvas>
                     <div id="nivel">Nivel: 0 %</div>
@@ -103,6 +106,96 @@
             </div>
         </section>
 
+        <!-- guía -->
+        <section id="funcionamiento" class="seccion_info">
+            <div class="encabezado_seccion">
+                <h2>Guía del Sonómetro</h2>
+            </div>
+
+            <div class="cuadricula_tarjetas">
+                <article class="tarjeta_info">
+                    <h3>¿Qué es un medidor de decibelios?</h3>
+                    <p>
+                        Un medidor de decibelios (o sonómetro) mide la intensidad del sonido. Esta versión web usa tu micrófono para detectar niveles relativos en tu entorno.
+                        <br>
+                        Aunque no reemplaza a un equipo profesional, es útil para comparar ruidos, verificar la sensibilidad del micro y monitorizar el ruido de fondo.
+                    </p>
+                </article>
+
+                <article class="tarjeta_info">
+                    <h3>Casos de uso</h3>
+                    <ul>
+                        <li>Probar la sensibilidad y niveles de captación del micrófono</li>
+                        <li>Revisar el ruido ambiental antes de grabar o hacer streaming</li>
+                        <li>Comparar el sonido de diferentes teclados mecánicos</li>
+                        <li>Monitorizar el ruido en tu zona de trabajo</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- decibelios -->
+        <section id="decibelios" class="seccion_decibelios">
+            <div class="texto_decibelios">
+                <h2>Escala dB<br></h2>
+                <p>Los decibelios (dB) sirven para medir qué tan intenso es un sonido. Se utiliza una escala logarítmica, por lo que un cambio de 10 dB representa una diferencia importante en la intensidad del sonido.
+                <br><br>
+                En nuestro sonómetro, los valores van desde -60 dB, que representa un sonido muy bajo, hasta 0 dB, que es el nivel máximo que puede mostrar nuestro medidor.</p>
+            </div>
+
+            <div class="lista_escalas">
+                <div class="fila_escala">
+                    <strong>20 dB</strong>
+                    <span>Susurro</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>40 dB</strong>
+                    <span>Habitación silenciosa</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>60 dB</strong>
+                    <span>Conversación normal</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>80 dB</strong>
+                    <span>Tráfico pesado</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>100 dB</strong>
+                    <span>Concierto de rock</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- info2 -->
+        <section id="info" class="seccion_info2">
+            <div>
+                <h2>
+                    El ruido
+                    <br>
+                    <span>y sus efectos.</span>
+                </h2>
+            </div>
+
+            <div class="texto_info2">
+                <p>
+                    El ruido es un sonido no deseado que puede
+                    generar molestias y afectar nuestro bienestar.
+                    Su impacto depende principalmente de qué tan
+                    fuerte es el sonido y cuánto tiempo estamos
+                    expuestos a él. Además, una exposición prolongada
+                    a niveles altos puede provocar daños en la audición.
+                </p>
+
+                <p class="caja_mas">
+                    ¿Querés saber más sobre el ruido?
+                    <a href="https://www.vidasostenible.org/hablando-de-ruido/" target="_blank">
+                        Presioná acá.
+                    </a>
+                </p>
+            </div>
+        </section>
+
     </main>
 
     <!-- footer -->
@@ -123,122 +216,7 @@
         </div>
     </footer>
 
-    <script>
-        let canvas = document.getElementById("canvas");
-        let ctx = canvas.getContext("2d");
-
-        async function iniciar() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                document.getElementById("micStatus").innerText = "Activado";
-
-                const audioContext = new AudioContext();
-                const source = audioContext.createMediaStreamSource(stream);
-                const analyser = audioContext.createAnalyser();
-
-                analyser.fftSize = 2048;
-                source.connect(analyser);
-
-                const bufferLength = analyser.fftSize;
-                const dataArray = new Uint8Array(bufferLength);
-                const freqData = new Uint8Array(analyser.frequencyBinCount);
-
-                function dibujar() {
-                    requestAnimationFrame(dibujar);
-
-                    analyser.getByteTimeDomainData(dataArray);
-
-                    ctx.fillStyle = "rgba(0,0,0,0.3)";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.strokeStyle = "rgba(0,255,0,0.3)";
-                    ctx.beginPath();
-                    ctx.moveTo(0, canvas.height / 2);
-                    ctx.lineTo(canvas.width, canvas.height / 2);
-                    ctx.stroke();
-
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = "#00ff88";
-
-                    ctx.beginPath();
-
-                    let sliceWidth = canvas.width / bufferLength;
-                    let x = 0;
-                    let suma = 0;
-
-                    for (let i = 0; i < bufferLength; i++) {
-                        let v = (dataArray[i] - 128) / 128.0;
-                        let y = canvas.height / 2 + v * (canvas.height / 2);
-
-                        suma += v * v;
-
-                        if (i === 0) { ctx.moveTo(x, y); }
-                        else { ctx.lineTo(x, y); }
-
-                        x += sliceWidth;
-                    }
-
-                    ctx.stroke();
-
-                    analyser.getByteFrequencyData(freqData);
-
-                    let bars = 60;
-                    let step = Math.floor(freqData.length / bars);
-                    let barWidth = canvas.width / bars;
-
-                    for (let i = 0; i < bars; i++) {
-                        let value = freqData[i * step];
-                        let percent = value / 255;
-                        let barHeight = percent * canvas.height * 0.5;
-
-                        let x = i * barWidth;
-                        let y = canvas.height - barHeight;
-
-                        let r = percent * 255;
-                        let g = 255 - (percent * 150);
-
-                        ctx.fillStyle = `rgb(${r},${g},50)`;
-                        ctx.fillRect(x, y, barWidth - 2, barHeight);
-                    }
-
-                    let rms = Math.sqrt(suma / bufferLength);
-                    let porcentaje = Math.min(100, rms * 200);
-
-                    document.getElementById("nivel").innerHTML = "Nivel: " + porcentaje.toFixed(1) + " %";
-                    
-                    // Actualizar barra de nivel visual y decibelios estimados
-                    document.getElementById("levelFill").style.width = porcentaje.toFixed(1) + "%";
-                    let dbEstimado = -60 + (porcentaje * 0.6);
-                    document.getElementById("valor_decibelios").innerText = dbEstimado.toFixed(1);
-
-                    let inicio = Math.floor(freqData.length * 0.05);
-                    let fin = Math.floor(freqData.length * 0.25);
-                    let energiaVoz = 0;
-
-                    for (let i = inicio; i < fin; i++) {
-                        energiaVoz += freqData[i];
-                    }
-
-                    energiaVoz /= (fin - inicio);
-
-                    let hayVoz = (rms > 0.02 && energiaVoz > 30);
-                    let estado = document.getElementById("voz");
-
-                    if (hayVoz) {
-                        estado.innerHTML = "🟢 Voz detectada";
-                        estado.style.color = "#00ff88";
-                    } else {
-                        estado.innerHTML = "⚪ Ruido / silencio";
-                        estado.style.color = "#aaaaaa";
-                    }
-                }
-
-                dibujar();
-            } catch (err) {
-                console.error("Error al acceder al micrófono:", err);
-            }
-        }
-    </script>
+    <script src="./js/script.js"></script>
 </body>
 
 </html>
