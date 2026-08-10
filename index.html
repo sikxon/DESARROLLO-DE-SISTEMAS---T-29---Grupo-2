@@ -1,213 +1,244 @@
 <!DOCTYPE html>
-
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<title>Visualizador PRO + Detector de Voz</title>
-
-<style>
-
-body{
-    margin:0;
-    background:#111;
-    color:white;
-    font-family:Arial;
-    text-align:center;
-}
-
-h1{ margin-top:20px; }
-
-button{
-    padding:12px 25px;
-    font-size:18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#1abc9c;
-    color:white;
-}
-
-button:hover{ background:#16a085; }
-
-canvas{
-    margin-top:25px;
-    border:2px solid #555;
-    background:black;
-}
-
-#nivel{
-    margin-top:15px;
-    font-size:20px;
-}
-
-#voz{
-    margin-top:10px;
-    font-size:22px;
-    font-weight:bold;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonómetro</title>
+    <link rel="stylesheet" href="./styles/styles.css">
 </head>
 
 <body>
 
-<h1>PROYECTO PARA VERSIONADO ET 26 DE 6</h1>
+    <!-- nav -->
+    <header class="navegacion">
+        <nav class="menu_principal">
+            <a href="#inicio">INICIO</a>
+            <a href="#medidor">MEDIDOR</a>
+        </nav>
+    </header>
 
+    <main>
 
-<h1>Osciloscopio + FFT + Detector de Voz</h1>
+        <!-- inicio -->
+        <section id="inicio" class="principal">
+            <h1 class="titulo_gran">SONÓMETRO</h1>
 
-<button onclick="iniciar()">Activar Micrófono</button>
+            <!-- contenido -->
+            <div class="contenido_hero">
+                <div class="texto_hero">
+                    <h2>
+                        Determine el nivel de
+                        <span>ruido ambiental</span>
+                    </h2>
+                    <p>
+                        Al usar nuestro medidor de decibelios
+                        para evaluar su audición, los resultados
+                        serán más precisos cuanto menor sea
+                        el nivel de ruido ambiental.
+                    </p>
+                    <a href="#medidor" class="boton_accion">
+                        Comenzar prueba
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
 
-<br>
+            <!-- circulitos -->
+            <div class="fondo_visual">
+                <div class="circulo_sonido circulo_1"></div>
+                <div class="circulo_sonido circulo_2"></div>
+                <div class="circulo_sonido circulo_3"></div>
+                <div class="circulo_sonido circulo_4"></div>
+                <div class="circulo_sonido circulo_5"></div>
+                <div class="circulo_sonido circulo_6"></div>
+                <div class="disco_centro"></div>
+            </div>
+        </section>
 
-<canvas id="canvas" width="1000" height="300"></canvas>
+        <!-- medidor -->
+        <section id="medidor" class="seccion_medidor">
+            <div class="encabezado_seccion">
+                <h2>Medidor de sonido</h2>
+            </div>
 
-<div id="nivel">Nivel: 0 %</div>
-<div id="voz">Estado: ---</div>
+            <div class="caja_medidor">
+                <div class="bloque_control">
+                    <button onclick="iniciar()">Activar Micrófono</button>
+                    <br>
+                    <canvas id="canvas" width="1000" height="300"></canvas>
+                    <div id="nivel">Nivel: 0 %</div>
+                    <div id="voz">Estado: ---</div>
+                </div>
 
-<script>
+                <div class="datos_extra">
+                    <div class="columna_dato">
+                        <span>MICRÓFONO</span>
+                        <strong id="micStatus">Desactivado</strong>
+                    </div>
 
-let canvas=document.getElementById("canvas");
-let ctx=canvas.getContext("2d");
+                    <div class="columna_dato">
+                        <span>NIVEL ESTIMADO</span>
+                        <strong>
+                            <span id="valor_decibelios">-60.0</span>
+                            dB
+                        </strong>
+                    </div>
+                </div>
 
-async function iniciar(){
+                <!-- barra -->
+                <div class="contenedor_barra">
+                    <div class="escala_numerica">
+                        <span>0</span>
+                        <span>25</span>
+                        <span>50</span>
+                        <span>75</span>
+                        <span>100</span>
+                    </div>
 
-const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+                    <div class="barra_fondo">
+                        <div id="levelFill" class="barra_relleno"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-const audioContext=new AudioContext();
-const source=audioContext.createMediaStreamSource(stream);
-const analyser=audioContext.createAnalyser();
+    </main>
 
-analyser.fftSize=2048;
+    <!-- footer -->
+    <footer>
+        <div class="titulo_pie">SONÓMETRO</div>
 
-source.connect(analyser);
+        <div class="datos_pie pie_izquierda">
+            <span>GRUPO 2</span>
+            <span>CAROLINA PALACIOS</span>
+            <span>SOFIA ROMAZZOTTI</span>
+            <span>SABRINA FUENTES</span>
+        </div>
 
-// datos
-const bufferLength=analyser.fftSize;
-const dataArray=new Uint8Array(bufferLength);
-const freqData=new Uint8Array(analyser.frequencyBinCount);
+        <div class="datos_pie pie_derecha">
+            <span>FRANCISCO ALDEA</span>
+            <span>GIANFRANCO CRUDO</span>
+            <span>TOBIAS FABIAN</span>
+        </div>
+    </footer>
 
-function dibujar(){
+    <script>
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
 
-requestAnimationFrame(dibujar);
+        async function iniciar() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById("micStatus").innerText = "Activado";
 
-// =====================
-// OSCILOSCOPIO
-// =====================
+                const audioContext = new AudioContext();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
 
-analyser.getByteTimeDomainData(dataArray);
+                analyser.fftSize = 2048;
+                source.connect(analyser);
 
-ctx.fillStyle="rgba(0,0,0,0.3)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+                const bufferLength = analyser.fftSize;
+                const dataArray = new Uint8Array(bufferLength);
+                const freqData = new Uint8Array(analyser.frequencyBinCount);
 
-ctx.strokeStyle="rgba(0,255,0,0.3)";
-ctx.beginPath();
-ctx.moveTo(0,canvas.height/2);
-ctx.lineTo(canvas.width,canvas.height/2);
-ctx.stroke();
+                function dibujar() {
+                    requestAnimationFrame(dibujar);
 
-ctx.lineWidth=2;
-ctx.strokeStyle="#00ff88";
+                    analyser.getByteTimeDomainData(dataArray);
 
-ctx.beginPath();
+                    ctx.fillStyle = "rgba(0,0,0,0.3)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-let sliceWidth=canvas.width/bufferLength;
-let x=0;
+                    ctx.strokeStyle = "rgba(0,255,0,0.3)";
+                    ctx.beginPath();
+                    ctx.moveTo(0, canvas.height / 2);
+                    ctx.lineTo(canvas.width, canvas.height / 2);
+                    ctx.stroke();
 
-let suma=0;
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = "#00ff88";
 
-for(let i=0;i<bufferLength;i++){
+                    ctx.beginPath();
 
-let v=(dataArray[i]-128)/128.0;
-let y=canvas.height/2 + v*(canvas.height/2);
+                    let sliceWidth = canvas.width / bufferLength;
+                    let x = 0;
+                    let suma = 0;
 
-suma+=v*v;
+                    for (let i = 0; i < bufferLength; i++) {
+                        let v = (dataArray[i] - 128) / 128.0;
+                        let y = canvas.height / 2 + v * (canvas.height / 2);
 
-if(i===0){ ctx.moveTo(x,y); }
-else{ ctx.lineTo(x,y); }
+                        suma += v * v;
 
-x+=sliceWidth;
+                        if (i === 0) { ctx.moveTo(x, y); }
+                        else { ctx.lineTo(x, y); }
 
-}
+                        x += sliceWidth;
+                    }
 
-ctx.stroke();
+                    ctx.stroke();
 
-// =====================
-// FFT (ECUALIZADOR)
-// =====================
+                    analyser.getByteFrequencyData(freqData);
 
-analyser.getByteFrequencyData(freqData);
+                    let bars = 60;
+                    let step = Math.floor(freqData.length / bars);
+                    let barWidth = canvas.width / bars;
 
-let bars=60;
-let step=Math.floor(freqData.length/bars);
-let barWidth=canvas.width/bars;
+                    for (let i = 0; i < bars; i++) {
+                        let value = freqData[i * step];
+                        let percent = value / 255;
+                        let barHeight = percent * canvas.height * 0.5;
 
-for(let i=0;i<bars;i++){
+                        let x = i * barWidth;
+                        let y = canvas.height - barHeight;
 
-let value=freqData[i*step];
-let percent=value/255;
+                        let r = percent * 255;
+                        let g = 255 - (percent * 150);
 
-let barHeight=percent*canvas.height*0.5;
+                        ctx.fillStyle = `rgb(${r},${g},50)`;
+                        ctx.fillRect(x, y, barWidth - 2, barHeight);
+                    }
 
-let x=i*barWidth;
-let y=canvas.height-barHeight;
+                    let rms = Math.sqrt(suma / bufferLength);
+                    let porcentaje = Math.min(100, rms * 200);
 
-let r=percent*255;
-let g=255-(percent*150);
+                    document.getElementById("nivel").innerHTML = "Nivel: " + porcentaje.toFixed(1) + " %";
+                    
+                    // Actualizar barra de nivel visual y decibelios estimados
+                    document.getElementById("levelFill").style.width = porcentaje.toFixed(1) + "%";
+                    let dbEstimado = -60 + (porcentaje * 0.6);
+                    document.getElementById("valor_decibelios").innerText = dbEstimado.toFixed(1);
 
-ctx.fillStyle=`rgb(${r},${g},50)`;
+                    let inicio = Math.floor(freqData.length * 0.05);
+                    let fin = Math.floor(freqData.length * 0.25);
+                    let energiaVoz = 0;
 
-ctx.fillRect(x,y,barWidth-2,barHeight);
+                    for (let i = inicio; i < fin; i++) {
+                        energiaVoz += freqData[i];
+                    }
 
-}
+                    energiaVoz /= (fin - inicio);
 
-// =====================
-// NIVEL RMS
-// =====================
+                    let hayVoz = (rms > 0.02 && energiaVoz > 30);
+                    let estado = document.getElementById("voz");
 
-let rms=Math.sqrt(suma/bufferLength);
-let porcentaje=Math.min(100,rms*200);
+                    if (hayVoz) {
+                        estado.innerHTML = "🟢 Voz detectada";
+                        estado.style.color = "#00ff88";
+                    } else {
+                        estado.innerHTML = "⚪ Ruido / silencio";
+                        estado.style.color = "#aaaaaa";
+                    }
+                }
 
-document.getElementById("nivel").innerHTML=
-"Nivel: "+porcentaje.toFixed(1)+" %";
-
-// =====================
-// 🎤 DETECTOR DE VOZ
-// =====================
-
-// rango típico voz (bins medios)
-let inicio=Math.floor(freqData.length*0.05);
-let fin=Math.floor(freqData.length*0.25);
-
-let energiaVoz=0;
-
-for(let i=inicio;i<fin;i++){
-    energiaVoz+=freqData[i];
-}
-
-energiaVoz/= (fin-inicio);
-
-// umbrales simples
-let hayVoz = (rms > 0.02 && energiaVoz > 30);
-
-let estado = document.getElementById("voz");
-
-if(hayVoz){
-    estado.innerHTML="🟢 Voz detectada";
-    estado.style.color="#00ff88";
-}else{
-    estado.innerHTML="⚪ Ruido / silencio";
-    estado.style.color="#aaaaaa";
-}
-
-}
-
-dibujar();
-
-}
-
-</script>
-
+                dibujar();
+            } catch (err) {
+                console.error("Error al acceder al micrófono:", err);
+            }
+        }
+    </script>
 </body>
+
 </html>
