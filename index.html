@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonómetro</title>
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+
+<body>
+
+    <!-- nav -->
+    <header class="navegacion">
+        <nav class="menu_principal">
+            <a href="#inicio">INICIO</a>
+            <a href="#medidor">MEDIDOR</a>
+            <a href="#funcionamiento">GUÍA</a>
+            <a href="#decibelios">DECIBELIOS</a>
+            <a href="#info">INFO</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- inicio -->
+        <section id="inicio" class="principal">
+            <h1 class="titulo_gran">SONÓMETRO</h1>
+
+            <!-- contenido -->
+            <div class="contenido_hero">
+                <div class="texto_hero">
+                    <h2>
+                        Determine el nivel de
+                        <span>ruido ambiental</span>
+                    </h2>
+                    <p>
+                        Al usar nuestro medidor de decibelios
+                        para evaluar su audición, los resultados
+                        serán más precisos cuanto menor sea
+                        el nivel de ruido ambiental.
+                    </p>
+                    <a href="#medidor" class="boton_accion">
+                        Comenzar prueba
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- circulitos -->
+            <div class="fondo_visual">
+                <div class="circulo_sonido circulo_1"></div>
+                <div class="circulo_sonido circulo_2"></div>
+                <div class="circulo_sonido circulo_3"></div>
+                <div class="circulo_sonido circulo_4"></div>
+                <div class="circulo_sonido circulo_5"></div>
+                <div class="circulo_sonido circulo_6"></div>
+                <div class="disco_centro"></div>
+            </div>
+        </section>
+
+        <!-- medidor -->
+        <section id="medidor" class="seccion_medidor">
+            <div class="encabezado_seccion">
+                <h2>Medidor de sonido</h2>
+            </div>
+
+            <div class="caja_medidor">
+                <div class="bloque_control">
+                    <button>Activar Micrófono</button>
+                    <br>
+                    <canvas id="canvas" width="1000" height="300"></canvas>
+                    <div id="nivel">Nivel: 0 %</div>
+                    <div id="voz">Estado: ---</div>
+                </div>
+
+                <div class="datos_extra">
+                    <div class="columna_dato">
+                        <span>MICRÓFONO</span>
+                        <strong id="micStatus">Desactivado</strong>
+                    </div>
+
+                    <div class="columna_dato">
+                        <span>NIVEL ESTIMADO</span>
+                        <strong>
+                            <span id="valor_decibelios">-60.0</span>
+                            dB
+                        </strong>
+                    </div>
+                </div>
+
+                <!-- barra -->
+                <div class="contenedor_barra">
+                    <div class="escala_numerica">
+                        <span>0</span>
+                        <span>25</span>
+                        <span>50</span>
+                        <span>75</span>
+                        <span>100</span>
+                    </div>
+
+                    <div class="barra_fondo">
+                        <div id="levelFill" class="barra_relleno"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- guía -->
+        <section id="funcionamiento" class="seccion_info">
+            <div class="encabezado_seccion">
+                <h2>Guía del Sonómetro</h2>
+            </div>
+
+            <div class="cuadricula_tarjetas">
+                <article class="tarjeta_info">
+                    <h3>¿Qué es un medidor de decibelios?</h3>
+                    <p>
+                        Un medidor de decibelios (o sonómetro) mide la intensidad del sonido. Esta versión web usa tu micrófono para detectar niveles relativos en tu entorno.
+                        <br>
+                        Aunque no reemplaza a un equipo profesional, es útil para comparar ruidos, verificar la sensibilidad del micro y monitorizar el ruido de fondo.
+                    </p>
+                </article>
+
+                <article class="tarjeta_info">
+                    <h3>Casos de uso</h3>
+                    <ul>
+                        <li>Probar la sensibilidad y niveles de captación del micrófono</li>
+                        <li>Revisar el ruido ambiental antes de grabar o hacer streaming</li>
+                        <li>Comparar el sonido de diferentes teclados mecánicos</li>
+                        <li>Monitorizar el ruido en tu zona de trabajo</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- decibelios -->
+        <section id="decibelios" class="seccion_decibelios">
+            <div class="texto_decibelios">
+                <h2>Escala dB<br></h2>
+                <p>Los decibelios (dB) sirven para medir qué tan intenso es un sonido. Se utiliza una escala logarítmica, por lo que un cambio de 10 dB representa una diferencia importante en la intensidad del sonido.
+                <br><br>
+                En nuestro sonómetro, los valores van desde -60 dB, que representa un sonido muy bajo, hasta 0 dB, que es el nivel máximo que puede mostrar nuestro medidor.</p>
+            </div>
+
+            <div class="lista_escalas">
+                <div class="fila_escala">
+                    <strong>20 dB</strong>
+                    <span>Susurro</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>40 dB</strong>
+                    <span>Habitación silenciosa</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>60 dB</strong>
+                    <span>Conversación normal</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>80 dB</strong>
+                    <span>Tráfico pesado</span>
+                </div>
+                <div class="fila_escala">
+                    <strong>100 dB</strong>
+                    <span>Concierto de rock</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- info2 -->
+        <section id="info" class="seccion_info2">
+            <div>
+                <h2>
+                    El ruido
+                    <br>
+                    <span>y sus efectos.</span>
+                </h2>
+            </div>
+
+            <div class="texto_info2">
+                <p>
+                    El ruido es un sonido no deseado que puede
+                    generar molestias y afectar nuestro bienestar.
+                    Su impacto depende principalmente de qué tan
+                    fuerte es el sonido y cuánto tiempo estamos
+                    expuestos a él. Además, una exposición prolongada
+                    a niveles altos puede provocar daños en la audición.
+                </p>
+
+                <p class="caja_mas">
+                    ¿Querés saber más sobre el ruido?
+                    <a href="https://www.vidasostenible.org/hablando-de-ruido/" target="_blank">
+                        Presioná acá.
+                    </a>
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- footer -->
+    <footer>
+        <div class="titulo_pie">SONÓMETRO</div>
+
+        <div class="datos_pie pie_izquierda">
+            <span>GRUPO 2</span>
+            <span>CAROLINA PALACIOS</span>
+            <span>SOFIA ROMAZZOTTI</span>
+            <span>SABRINA FUENTES</span>
+        </div>
+
+        <div class="datos_pie pie_derecha">
+            <span>FRANCISCO ALDEA</span>
+            <span>GIANFRANCO CRUDO</span>
+            <span>TOBIAS FABIAN</span>
+        </div>
+    </footer>
+
+    <script src="./js/script.js"></script>
+</body>
+
+</html>
